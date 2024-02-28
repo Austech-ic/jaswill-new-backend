@@ -2,5 +2,5 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/jaswbwsw/jaswill_app/
-    - /bin/cp * $DEPLOYPATH
+    - /bin/cp -R images $DEPLOYPATH
     # - /bin/cp style.css $DEPLOYPATH
