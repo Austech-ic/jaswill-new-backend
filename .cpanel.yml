@@ -1,6 +1,6 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/example/jaswill_app/
+    - export DEPLOYPATH=/home/jaswbwsw/jaswill_app/
     - /bin/cp * $DEPLOYPATH
     # - /bin/cp style.css $DEPLOYPATH
