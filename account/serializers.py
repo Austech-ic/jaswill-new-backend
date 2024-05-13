@@ -2,7 +2,6 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-from .services import check_isactive,check_verification
 from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.settings import api_settings
 from django.contrib.auth.models import update_last_login
@@ -59,37 +58,16 @@ class TokenObtainPairSerializer(TokenObtainSerializer):
         if User.objects.filter(Q(email__iexact=data)|Q(username__iexact=data)).exists():
             return data
         raise serializers.ValidationError("email does not exist")
-    
-    def validate(self, attrs):
-            data = super().validate(attrs)
-        # check if the user is still is active or not
-            check_isactive(self.user)
-            # check if the user is verified before he can successfully login in
-            check_verification(self.user) 
-            refresh = self.get_token(self.user)
-            data["refresh"] = str(refresh)
-            data["access"] = str(refresh.access_token)
+        
+class EmailVerificationSerailaizer(serializers.Serializer):
+    email=serializers.EmailField(required=True)
+    otp=serializers.CharField(max_length=5,required=True)
 
-            if api_settings.UPDATE_LAST_LOGIN:
-                update_last_login(None,self.user)
-
-            return data
-    
-class EmailVerificationSerailaizer(serializers.ModelSerializer):
-    class Meta:
-        model=EmailVerification
-        fields=['email','otp']
-        extra_kwargs={
-            "email":{
-            "required":True}
-         }
             
-    def validate(self, attrs):
-        email=attrs.get('email',None)
-        if email is None:
-            raise serializers.ValidationError({"detail":"please enter a valid Email"})
-        return attrs
+class UserEmailVerificationSerailaizer(serializers.Serializer):
+    email=serializers.EmailField(required=True,write_only=True)
 
+        
 class ForgetPasswordInputSerializer(serializers.Serializer):
     email=serializers.CharField(required=True,max_length=20)
     password=serializers.CharField(required=True, write_only=True)

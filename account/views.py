@@ -5,12 +5,13 @@ from drf_yasg.utils import swagger_auto_schema
 from utils.responses import SuccessResponse,FailureResponse
 from utils.error_handler import error_handler
 from rest_framework import status
-from .mixin import EmailVerificationMixin
-from .services import jwt_token
+# from .mixin import EmailVerificationMixin
+# from .services import jwt_token
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import (TokenRefreshView,TokenBlacklistView,TokenObtainPairView)
-
+import datetime
+from .helpers import send_emails,jwt_token
 
 class AdminSignUpAPiView(APIView):
     authentication_classes=[]
@@ -42,25 +43,54 @@ class LoginApiView(TokenObtainPairView):
             return FailureResponse(error_handler(e),status=status.HTTP_404_NOT_FOUND)
         return SuccessResponse(data, status=status.HTTP_200_OK)
 
-
-class EmailVerificationApiView(EmailVerificationMixin,APIView):
+class EmailOTpVerificationApiView(APIView):
     permission_classes=[]
     authentication_classes=[]
 
     @swagger_auto_schema(
-        request_body=EmailVerificationSerailaizer(),
-        description='''This endpoint is used by both client an consellor
-        usage:  This is email verification logic so it has two part on one api.
-                when a user enter is email without otp and otp will be sent to the user
-                after that the user will then send both the email and the sent otp the user will be verified.
-                when a user otp time expires the user then send only his email to get a new otp.
-                i recommend saving the email in a sharedpreference when the user first register.
-                or u can also save it in sharedpreference during forgetpassword.
-          '''
+        request_body=EmailVerificationSerailaizer()
     )
     # @transaction.atomic
-    def post(self, request,):
-        return self.create(request)
+    def post(self,request):
+        try:
+            serializer=EmailVerificationSerailaizer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            email=serializer.validated_data['email']
+            otp=serializer.validated_data['otp']
+            #filter to check if the user exist
+            email_verification=EmailVerification.objects.filter(email__iexact=email,otp=otp)
+            if email_verification:
+                #filter to check if the user exist and if the time as elapse
+                if email_verification.last().date_generated + datetime.timedelta(seconds=300) > datetime.datetime.now(datetime.timezone.utc):
+                    email_verification.delete()
+                    res=jwt_token(get_user_model().objects.get(email=email))
+                    #return jwt token
+                    return SuccessResponse(res,status=status.HTTP_200_OK)
+                else:
+                    email_verification.delete()
+                    return FailureResponse("Verification Link Has Expired",
+                    status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return FailureResponse("InValid Otp",
+                    status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
+
+class UserEmailVerification(APIView):
+    permission_classes=[]
+    authentication_classes=[]
+    @swagger_auto_schema(
+            request_body=UserEmailVerificationSerailaizer
+    )
+    def post(self,request):
+        try:
+            serializer=UserEmailVerificationSerailaizer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            email=serializer.validated_data['email']
+            send_emails(email=email)
+            return SuccessResponse("otp sent",status=status.HTTP_200_OK)
+        except Exception as e:
+            return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
 
 class ResetPasswordApiView(APIView):
     permission_classes=[]
@@ -91,7 +121,6 @@ class LogoutView(TokenBlacklistView):
         except Exception as e:
             return FailureResponse(error_handler(e), status=status.HTTP_400_BAD_REQUEST)
         return SuccessResponse(res.data,status=status.HTTP_200_OK)
-
 
 class RefreshTokenView(TokenRefreshView):
     def post(self, request, *args, **kwargs):
