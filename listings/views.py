@@ -25,15 +25,22 @@ class BlogApiView(APIView):
             return SuccessResponse(BlogOutputSerializer(data).data,status=status.HTTP_200_OK)
         except Exception as e:
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
-        
-class GetBlogApiView(APIView):
-    permission_classes=[IsAuthenticatedOrReadOnly]
+
     def get(self,request):
         try:
             queryset=Blog.objects.all()
             return SuccessResponse(BlogOutputSerializer(queryset,many=True).data,status=status.HTTP_200_OK)
         except Exception as e:
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
+        
+# class GetBlogApiView(APIView):
+#     permission_classes=[IsAuthenticatedOrReadOnly]
+#     def get(self,request):
+#         try:
+#             queryset=Blog.objects.all()
+#             return SuccessResponse(BlogOutputSerializer(queryset,many=True).data,status=status.HTTP_200_OK)
+#         except Exception as e:
+#             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
         
 class SingleBlogApiView(APIView):
     parser_classes=[JSONParser,MultiPartParser,FormParser]
@@ -82,17 +89,24 @@ class TestimonyApiView(APIView):
             return SuccessResponse(TestimonySerializer(data).data,status=status.HTTP_200_OK)
         except Exception as e:
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
-        
-class GetTestimonyApiView(APIView):
-    permission_classes=[IsAuthenticatedOrReadOnly]
-    parser_classes=[JSONParser,MultiPartParser,FormParser]
-    
+
     def get(self,request):
         try:
             queryset=Testimony.objects.all()
             return SuccessResponse(TestimonySerializer(queryset,many=True).data,status=status.HTTP_200_OK)
         except Exception as e:
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
+        
+# class GetTestimonyApiView(APIView):
+#     permission_classes=[IsAuthenticatedOrReadOnly]
+#     parser_classes=[JSONParser,MultiPartParser,FormParser]
+    
+#     def get(self,request):
+#         try:
+#             queryset=Testimony.objects.all()
+#             return SuccessResponse(TestimonySerializer(queryset,many=True).data,status=status.HTTP_200_OK)
+#         except Exception as e:
+#             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
         
 class SingleTestimonyApiView(APIView):
     parser_classes=[JSONParser,MultiPartParser,FormParser]
@@ -167,9 +181,6 @@ class CategoryApiView(APIView):
             return SuccessResponse(ListingCategorySerializer(data).data,status=status.HTTP_200_OK)
         except Exception as e:
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
-        
-class GetCategoryApiView(APIView):
-    permission_classes=[IsAuthenticatedOrReadOnly]
 
     def get(self,request):
         try:
@@ -178,25 +189,17 @@ class GetCategoryApiView(APIView):
         except Exception as e:
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
         
+# class GetCategoryApiView(APIView):
+#     permission_classes=[IsAuthenticatedOrReadOnly]
+
+#     def get(self,request):
+#         try:
+#             queryset=ListingCategory.objects.all()
+#             return SuccessResponse(ListingCategorySerializer(queryset,many=True).data,status=status.HTTP_200_OK)
+#         except Exception as e:
+#             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
+        
 class PropertyApiView(APIView):
-    permission_classes=[IsAuthenticatedOrReadOnly]
-
-    @swagger_auto_schema(
-            manual_parameters=[
-                Parameter("category",IN_QUERY,type="int",required=False)   
-            ]
-    )
-    def get(self,request):
-        try:
-            category=request.GET.get("category",None)
-            queryset=PropertyListing.objects.all()
-            if category:
-                queryset=queryset.filter(category__pk=category)
-            return SuccessResponse(PropertyOutputSerilaizer(queryset,many=True).data,status=status.HTTP_200_OK)
-        except Exception as e:
-            return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
-
-class CreatePropertyApiView(APIView):
     parser_classes=[JSONParser,MultiPartParser,FormParser]
     permission_classes=[IsAuthenticatedOrReadOnly]
 
@@ -215,6 +218,56 @@ class CreatePropertyApiView(APIView):
             return SuccessResponse(serializer.data,status=status.HTTP_200_OK)
         except Exception as e:
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(
+            manual_parameters=[
+                Parameter("category",IN_QUERY,type="int",required=False)   
+            ]
+    )
+    def get(self,request):
+        try:
+            category=request.GET.get("category",None)
+            queryset=PropertyListing.objects.all()
+            if category:
+                queryset=queryset.filter(category__pk=category)
+            return SuccessResponse(PropertyOutputSerilaizer(queryset,many=True).data,status=status.HTTP_200_OK)
+        except Exception as e:
+            return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
+
+# class CreatePropertyApiView(APIView):
+#     parser_classes=[JSONParser,MultiPartParser,FormParser]
+#     permission_classes=[IsAuthenticatedOrReadOnly]
+
+#     @swagger_auto_schema(
+#             request_body=PropertySerializer
+#     )
+#     def post(self,request):
+#         try:
+#             serializer=PropertySerializer(data=request.data)
+#             serializer.is_valid(raise_exception=True)
+#             image=serializer.validated_data.pop("image",None)
+#             data=serializer.save()
+#             #save image 
+#             if image:
+#                 ImageAsset.objects.create(property=data,image=image)
+#             return SuccessResponse(serializer.data,status=status.HTTP_200_OK)
+#         except Exception as e:
+#             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
+
+#     @swagger_auto_schema(
+#             manual_parameters=[
+#                 Parameter("category",IN_QUERY,type="int",required=False)   
+#             ]
+#     )
+#     def get(self,request):
+#         try:
+#             category=request.GET.get("category",None)
+#             queryset=PropertyListing.objects.all()
+#             if category:
+#                 queryset=queryset.filter(category__pk=category)
+#             return SuccessResponse(PropertyOutputSerilaizer(queryset,many=True).data,status=status.HTTP_200_OK)
+#         except Exception as e:
+#             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
         
 class SinglePropertyApiView(APIView):
     parser_classes=[JSONParser,MultiPartParser,FormParser]
@@ -259,6 +312,7 @@ class SinglePropertyApiView(APIView):
         
 class ContactUsApiView(APIView):
     parser_classes=[JSONParser,FormParser,MultiPartParser]
+    permission_classes=[IsAuthenticatedOrReadOnly]
 
     @swagger_auto_schema(
             request_body=ContactUsSerializer,
@@ -272,8 +326,6 @@ class ContactUsApiView(APIView):
             return SuccessResponse(serializer.data,status=status.HTTP_201_CREATED)
         except Exception as e:
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
-        
-class GetContactUsApiView(APIView):
 
     def get(self,request):
         try:
@@ -282,9 +334,20 @@ class GetContactUsApiView(APIView):
             return SuccessResponse(new_data,status=status.HTTP_200_OK)
         except Exception as e:
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
+        
+# class GetContactUsApiView(APIView):
+
+#     def get(self,request):
+#         try:
+#             data=ContactUs.objects.order_by("-id").first()
+#             new_data=ContactUsSerializer(data).data
+#             return SuccessResponse(new_data,status=status.HTTP_200_OK)
+#         except Exception as e:
+#             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
 
 class SingleContactUsApiView(APIView):
     parser_classes=[JSONParser,FormParser,MultiPartParser]
+    permission_classes=[IsAuthenticatedOrReadOnly]
 
     @swagger_auto_schema(request_body=ContactUsSerializer)
     def put(self,request,pk):
@@ -307,6 +370,7 @@ class SingleContactUsApiView(APIView):
 
 class AboutUsApiView(APIView):
     parser_classes=[JSONParser,FormParser,MultiPartParser]
+    permission_classes=[IsAuthenticatedOrReadOnly]
 
     @swagger_auto_schema(
             request_body=AboutUsSerializer,
@@ -321,8 +385,6 @@ class AboutUsApiView(APIView):
         except Exception as e:
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
         
-class GetAboutUsApiView(APIView):
-
     def get(self,request):
         try:
             data=AboutUs.objects.order_by("-id").first()
@@ -330,6 +392,16 @@ class GetAboutUsApiView(APIView):
             return SuccessResponse(new_data,status=status.HTTP_200_OK)
         except Exception as e:
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
+        
+# class GetAboutUsApiView(APIView):
+
+#     def get(self,request):
+#         try:
+#             data=AboutUs.objects.order_by("-id").first()
+#             new_data=AboutUsSerializer(data).data
+#             return SuccessResponse(new_data,status=status.HTTP_200_OK)
+#         except Exception as e:
+#             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
 
 class SingleAboutUsApiView(APIView):
     parser_classes=[JSONParser,FormParser,MultiPartParser]
@@ -355,6 +427,7 @@ class SingleAboutUsApiView(APIView):
 
 class OurServiceApiView(APIView):
     parser_classes=[JSONParser,FormParser,MultiPartParser]
+    permission_classes=[IsAuthenticatedOrReadOnly]
 
     @swagger_auto_schema(
             request_body=OurserviceSerializer,
@@ -369,8 +442,6 @@ class OurServiceApiView(APIView):
         except Exception as e:
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
         
-class GetOurservicesApiView(APIView):
-
     def get(self,request):
         try:
             data=OurServices.objects.order_by("-id").first()
@@ -378,6 +449,16 @@ class GetOurservicesApiView(APIView):
             return SuccessResponse(new_data,status=status.HTTP_200_OK)
         except Exception as e:
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
+        
+# class GetOurservicesApiView(APIView):
+
+#     def get(self,request):
+#         try:
+#             data=OurServices.objects.order_by("-id").first()
+#             new_data=OurserviceOutPutSerializer(data).data
+#             return SuccessResponse(new_data,status=status.HTTP_200_OK)
+#         except Exception as e:
+#             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
 
 class SingleOurserviceContactUsApiView(APIView):
     parser_classes=[JSONParser,FormParser,MultiPartParser]
@@ -402,6 +483,7 @@ class SingleOurserviceContactUsApiView(APIView):
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
 
 class IconApiView(APIView):
+    permission_classes=[IsAuthenticatedOrReadOnly]
     def get(self,request):
         try:
             data=Icon.objects.all()

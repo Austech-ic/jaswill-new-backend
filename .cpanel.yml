@@ -1,6 +1,0 @@
----
-deployment:
-  tasks:
-    - export DEPLOYPATH=/home/jaswbwsw/jaswill_app/
-    - /bin/cp -R * $DEPLOYPATH
-   

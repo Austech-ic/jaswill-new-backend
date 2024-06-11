@@ -162,7 +162,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL="account.CustomUser"
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=60),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1000),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": False,
@@ -241,10 +241,7 @@ CORS_EXPOSE_HEADERS = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
-    "https://teragist-ex44.onrender.com",
-    "http://127.0.0.1:8000",
-    "http://192.168.43.73:8000",
-    "https://fe6e-197-211-59-151.ngrok-free.app"
+ 
 ]
 CORS_ALLOW_ALL_ORIGINS=False
 
