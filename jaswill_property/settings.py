@@ -193,7 +193,6 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=5),
 
-    # "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
     "TOKEN_OBTAIN_SERIALIZER": "account.serializers.TokenObtainPairSerializer",
     "TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",
     "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",
@@ -220,15 +219,17 @@ EMAIL_HOST_PASSWORD =config('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-MEDIA_URL="/media/"
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# MEDIA_URL="/media/"
+# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+MEDIA_ROOT="/home/jaswbwsw/media.jaswillproperties.cloud/"
+MEDIA_URL="https://media.jaswillproperties.cloud"
 
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME':config('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY':config('CLOUDINARY_API_KEY'),
-    'API_SECRET':config('CLOUDINARY_API_SECRET')
-}
+# CLOUDINARY_STORAGE = {
+#     'CLOUD_NAME':config('CLOUDINARY_CLOUD_NAME'),
+#     'API_KEY':config('CLOUDINARY_API_KEY'),
+#     'API_SECRET':config('CLOUDINARY_API_SECRET')
+# }
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
@@ -241,7 +242,7 @@ CORS_EXPOSE_HEADERS = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
- 
+
 ]
 CORS_ALLOW_ALL_ORIGINS=False
 

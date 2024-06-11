@@ -17,9 +17,10 @@ def send_emails(email):
             to_email = email
             send_mail(subject, message, from_email, [to_email], fail_silently=False)
             #save the email and the otp to email verification table
+            EmailVerification.objects.filter(email=email).delete()
             EmailVerification.objects.create(email=email,otp=otp)
         except Exception as e:
-             raise RuntimeError("error in sending email")
+             raise RuntimeError("error in sending email:{}".format(e))
              return None
 
 
