@@ -7,19 +7,16 @@ class BlogInputSerializer(serializers.ModelSerializer):
         fields=[
             "title",
             "body",
-            "status",
             "image"
         ]
-        extra_kwargs={
-            "status":{
-                "required":False
-            }
-        }
+
 
 class BlogOutputSerializer(serializers.ModelSerializer):
     class Meta:
         model=Blog
-        fields="__all__"
+        exclude=[
+            "status"
+        ]
 
 class PropertyOutputSerilaizer(serializers.ModelSerializer):
     class Meta:
@@ -38,12 +35,10 @@ class PropertySerializer(serializers.ModelSerializer):
     image=serializers.ImageField(required=False,write_only=True)
     class Meta:
         model=PropertyListing
-        fields="__all__"
-        extra_kwargs={
-            "status":{
-                "required":False
-            }
-        }
+        exclude=[
+            "status"
+        ]
+
      
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -60,7 +55,9 @@ class ListingCategorySerializer(serializers.ModelSerializer):
 class TestimonySerializer(serializers.ModelSerializer):
     class Meta:
         model=Testimony
-        fields="__all__"
+        exclude=[
+            "status"
+        ]
 
 class AboutUsSerializer(serializers.ModelSerializer):
     class Meta:

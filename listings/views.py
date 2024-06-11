@@ -37,7 +37,7 @@ class BlogApiView(APIView):
 #     permission_classes=[IsAuthenticatedOrReadOnly]
 #     def get(self,request):
 #         try:
-#             queryset=Blog.objects.all()
+#             queryset=Blog.objects.filter(status="draft").all()
 #             return SuccessResponse(BlogOutputSerializer(queryset,many=True).data,status=status.HTTP_200_OK)
 #         except Exception as e:
 #             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
