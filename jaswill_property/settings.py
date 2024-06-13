@@ -96,13 +96,14 @@ else:
     DATABASES = {
                 "default":{
                 'ENGINE': 'django.db.backends.postgresql',
-                'NAME': "jaswbwsw_jaswill_db",
-                'USER': 'jaswbwsw_jaswill',
-                'PASSWORD': 'fpFM5WUinBfr',
+                'NAME': 'jaswbwsw_live',
+                'USER': 'jaswbwsw_jaswill_live',
+                'PASSWORD': 'Aazpp4mx%MI2',
                 'HOST': 'localhost',
                 'PORT': 5432,
             }
     }
+  
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
