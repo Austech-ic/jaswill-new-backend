@@ -54,8 +54,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     is_verified = models.BooleanField( _("Verified"),default=False)
     date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
     terms_condition=models.BooleanField(default=False)
-    # roles=models.ManyToManyField(Role,blank=True,related_name="user_role",)
-    # other_perms=models.ManyToManyField(Permissions,blank=True,related_name="user_permissions")
+
     
    
     EMAIL_FIELD = ""
