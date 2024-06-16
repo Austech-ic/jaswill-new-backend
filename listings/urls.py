@@ -8,9 +8,9 @@ from .views import (
                     SingleTestimonyApiView,
                     SingleCategoryApiView,
                     CategoryApiView,
-                   
+                   HomeApiView,
                     PropertyApiView,
-                 
+                    DashBoardApiView,
                     SinglePropertyApiView,
                     ContactUsApiView,
                     OurServiceApiView,
@@ -31,7 +31,7 @@ url("testimony/<int:pk>/",SingleTestimonyApiView.as_view()),
 url("category/",CategoryApiView.as_view()),
 url("category/<int:pk>/",SingleCategoryApiView.as_view()),
 
-url("properties/",PropertyApiView.as_view()),
+url("property/",PropertyApiView.as_view()),
 url("property/<uuid:pk>/",SinglePropertyApiView.as_view()),
 
 #____________________---------------------__________________
@@ -45,4 +45,7 @@ url("about/",AboutUsApiView.as_view()),
 
 url("about/<int:pk>/",SingleAboutUsApiView.as_view()),
 url("icons/",IconApiView.as_view()),
+
+url("dashbord/",DashBoardApiView.as_view()),
+url("home/",HomeApiView.as_view())
 ]

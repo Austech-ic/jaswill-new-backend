@@ -60,6 +60,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "jaswill_property.middleware.DeviceTrackerMiddleware",
+    "jaswill_property.middleware.MostViewPageMiddleware"
 ]
 
 ROOT_URLCONF = 'jaswill_property.urls'

@@ -3,6 +3,7 @@ PROPERTY_TYPE=(
 )
 
 STATUS=(
-    ("published","Published"),
-    ("draft","Draft"),
+    ("active","active"),
+    ("pending","pending"),
+    ("expire","expire"),
 )

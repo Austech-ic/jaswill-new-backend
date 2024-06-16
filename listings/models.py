@@ -26,10 +26,10 @@ class PropertyListing(models.Model):
     title=models.CharField(max_length=500,null=False)
     description=models.TextField()
     city=models.CharField(max_length=500,null=False)
-    category=models.ForeignKey(ListingCategory,on_delete=models.CASCADE,null=True,blank=True)
+    category=models.CharField(max_length=500,null=True)
     content=models.TextField()
     location=models.CharField(max_length=500,null=False)
-    status=models.CharField(choices=STATUS,default="published",max_length=10)
+    status=models.CharField(choices=STATUS,default="active",max_length=20)
     property_ype=models.CharField(max_length=200,choices=PROPERTY_TYPE)
     price=models.DecimalField(max_digits=10,decimal_places=0)
     no_bedroom=models.IntegerField(default=0)
@@ -93,3 +93,9 @@ class ContactUs(models.Model):
     location=models.CharField(max_length=500,null=True)
     phone_number=models.TextField(null=True)
     whatapp_link=models.URLField(null=True)
+
+class Device(models.Model):
+    name=models.CharField(max_length=30,null=False)
+
+class MostViewPage(models.Model):
+    name=models.CharField(max_length=200,null=False)

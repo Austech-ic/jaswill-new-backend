@@ -35,9 +35,7 @@ class PropertySerializer(serializers.ModelSerializer):
     image=serializers.ImageField(required=False,write_only=True)
     class Meta:
         model=PropertyListing
-        exclude=[
-            "status"
-        ]
+        fields="__all__"
 
      
 
