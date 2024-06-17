@@ -10,11 +10,11 @@ class DeviceTrackerMiddleware(MiddlewareMixin):
         response = self.get_response(request)
         user_agent=request.META.get('HTTP_USER_AGENT', '').lower()
         if request.path != "/":
-            if "ios" in user_agent:
+            if "iphone" in user_agent:
                 Device.objects.create(
                     name="Mobile"
                 )
-            if "mac os" in user_agent:
+            if "macintosh" in user_agent:
                 Device.objects.create(
                     name="Web"
                 )
