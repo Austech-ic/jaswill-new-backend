@@ -11,6 +11,7 @@ from rest_framework.parsers import JSONParser,MultiPartParser,FormParser
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 # Create your views here.
 from django.db.models import Count
+
 class BlogApiView(APIView):
     parser_classes=[JSONParser,MultiPartParser,FormParser]
     permission_classes=[IsAuthenticatedOrReadOnly]
@@ -26,10 +27,20 @@ class BlogApiView(APIView):
         except Exception as e:
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(
+            manual_parameters=[
+                Parameter("page",IN_QUERY,type="int",required=False),
+                Parameter("limit",IN_QUERY,type="int",required=False)    
+            ]
+    )
     def get(self,request):
         try:
+            page=int(request.GET.get("page",1))
+            limit=int(request.GET.get("limit",10))
             queryset=Blog.objects.all()
-            return SuccessResponse(BlogOutputSerializer(queryset,many=True).data,status=status.HTTP_200_OK)
+            paginated=queryset[((page-1) * limit):((page-1) *limit)+limit]
+            total_items=len(queryset)
+            return SuccessResponse(BlogOutputSerializer(paginated,many=True).data,status=status.HTTP_200_OK,page=page,limit=limit,total_items=total_items)
         except Exception as e:
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
                 
@@ -81,14 +92,24 @@ class TestimonyApiView(APIView):
         except Exception as e:
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(
+            manual_parameters=[
+  
+                Parameter("page",IN_QUERY,type="int",required=False),
+                Parameter("limit",IN_QUERY,type="int",required=False)    
+            ]
+    )
     def get(self,request):
         try:
+            page=int(request.GET.get("page",1))
+            limit=int(request.GET.get("limit",10))
             queryset=Testimony.objects.all()
-            return SuccessResponse(TestimonySerializer(queryset,many=True).data,status=status.HTTP_200_OK)
+            paginated=queryset[((page-1) * limit):((page-1) *limit)+limit]
+            total_items=len(queryset)
+            return SuccessResponse(TestimonySerializer(paginated,many=True).data,status=status.HTTP_200_OK,page=page,limit=limit,total_items=total_items)
         except Exception as e:
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
-        
-        
+             
 class SingleTestimonyApiView(APIView):
     parser_classes=[JSONParser,MultiPartParser,FormParser]
     permission_classes=[IsAuthenticatedOrReadOnly]
@@ -162,15 +183,24 @@ class CategoryApiView(APIView):
             return SuccessResponse(ListingCategorySerializer(data).data,status=status.HTTP_200_OK)
         except Exception as e:
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
-
+    @swagger_auto_schema(
+            manual_parameters=[
+  
+                Parameter("page",IN_QUERY,type="int",required=False),
+                Parameter("limit",IN_QUERY,type="int",required=False)    
+            ]
+    )
     def get(self,request):
         try:
+            page=int(request.GET.get("page",1))
+            limit=int(request.GET.get("limit",10))
             queryset=ListingCategory.objects.all()
-            return SuccessResponse(ListingCategorySerializer(queryset,many=True).data,status=status.HTTP_200_OK)
+            paginated=queryset[((page-1) * limit):((page-1) *limit)+limit]
+            total_items=len(queryset)
+            return SuccessResponse(ListingCategorySerializer(paginated,many=True).data,status=status.HTTP_200_OK,page=page,limit=limit,total_items=total_items)
         except Exception as e:
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
-        
-        
+              
 class PropertyApiView(APIView):
     parser_classes=[JSONParser,MultiPartParser,FormParser]
     permission_classes=[IsAuthenticatedOrReadOnly]
@@ -193,16 +223,22 @@ class PropertyApiView(APIView):
 
     @swagger_auto_schema(
             manual_parameters=[
-                Parameter("category",IN_QUERY,type="str",required=False)   
+                Parameter("category",IN_QUERY,type="str",required=False) ,
+                Parameter("page",IN_QUERY,type="int",required=False),
+                Parameter("limit",IN_QUERY,type="int",required=False)    
             ]
     )
     def get(self,request):
         try:
             category=request.GET.get("category",None)
+            page=int(request.GET.get("page",1))
+            limit=int(request.GET.get("limit",10))
             queryset=PropertyListing.objects.all()
             if category:
                 queryset=queryset.filter(category=category)
-            return SuccessResponse(PropertyOutputSerilaizer(queryset,many=True).data,status=status.HTTP_200_OK)
+            paginated=queryset[((page-1) * limit):((page-1) *limit)+limit]
+            total_items=len(queryset)
+            return SuccessResponse(PropertyOutputSerilaizer(paginated,many=True).data,status=status.HTTP_200_OK,page=page,limit=limit,total_items=total_items)
         except Exception as e:
             return FailureResponse(error_handler(e),status=status.HTTP_400_BAD_REQUEST)
         
@@ -437,13 +473,13 @@ class HomeApiView(APIView):
     def get(self,request):
         try:
             category=request.GET.get("category",None)
-            feature_property=PropertyListing.objects.order_by("-created_at").filter(status="active").all()  
-            our_service=OurServices.objects.all()
-            testimony=Testimony.objects.all()
-            blog=Blog.objects.all()
-            about_us=AboutUs.objects.all()
-            listing_category=ListingCategory.objects.all()
-            listing_property=PropertyListing.objects.filter(status="active")
+            feature_property=PropertyListing.objects.order_by("-created_at").filter(status="active").all()[:10]  
+            our_service=OurServices.objects.all()[:10]
+            testimony=Testimony.objects.all()[:10]
+            blog=Blog.objects.all()[:10]
+            about_us=AboutUs.objects.all()[:10]
+            listing_category=ListingCategory.objects.all()[:10]
+            listing_property=PropertyListing.objects.filter(status="active")[:10]
             if category:
                 listing_property=listing_property.filter(category=category)
 

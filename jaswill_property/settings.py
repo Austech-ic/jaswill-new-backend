@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-$t#bjx)yy-)p(!d+29@1vg3#fc^yf9r2vh9-u*$mav!rq!zb+^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["jaswillproperties.cloud","www.jaswillproperties.cloud","localhost"]
 
 
 # Application definition
@@ -226,7 +226,7 @@ STATIC_URL = 'static/'
 
 if not DEBUG:
     MEDIA_ROOT="/home/jaswbwsw/media.jaswillproperties.cloud/"
-    MEDIA_URL="https://media.jaswillproperties.cloud"
+    MEDIA_URL="https://media.jaswillproperties.cloud/"
     STATIC_ROOT = '/home/jaswbwsw/public_html/static'
 
 else:
@@ -242,6 +242,7 @@ CORS_EXPOSE_HEADERS = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
+    "https://jaswillproperties.cloud"
 
 ]
 CORS_ALLOW_ALL_ORIGINS=False
